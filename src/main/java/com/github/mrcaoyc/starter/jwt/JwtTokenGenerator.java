@@ -6,6 +6,7 @@ import com.github.mrcaoyc.common.exception.runtime.CredentialsTimeoutException;
 import com.github.mrcaoyc.security.Token;
 import com.github.mrcaoyc.security.TokenErrorMessage;
 import com.github.mrcaoyc.security.TokenGenerator;
+import com.github.mrcaoyc.security.TokenProperties;
 import com.github.mrcaoyc.starter.keygen.KeyGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -27,10 +28,12 @@ public class JwtTokenGenerator implements TokenGenerator {
     private final String TOKEN_TYPE_KEY = "token_type";
     private final String ACCESS_TYPE_VALUE = "accessToken";
     private final String REFRESH_TYPE_VALUE = "refreshToken";
+    private final TokenProperties tokenProperties;
     private final JwtTokenProperties jwtTokenProperties;
     private final KeyGenerator keyGenerator;
 
-    public JwtTokenGenerator(JwtTokenProperties jwtTokenProperties, KeyGenerator keyGenerator) {
+    public JwtTokenGenerator(TokenProperties tokenProperties, JwtTokenProperties jwtTokenProperties, KeyGenerator keyGenerator) {
+        this.tokenProperties = tokenProperties;
         this.jwtTokenProperties = jwtTokenProperties;
         this.keyGenerator = keyGenerator;
     }
@@ -43,7 +46,7 @@ public class JwtTokenGenerator implements TokenGenerator {
         Token token = new Token();
         token.setAccessToken(createAccessToken(payload, token));
         token.setRefreshToken(createRefreshToken(payload, token));
-        token.setExpiresIn(jwtTokenProperties.getExpiresIn());
+        token.setExpiresIn(tokenProperties.getExpiresIn());
         return token;
     }
 
@@ -107,7 +110,7 @@ public class JwtTokenGenerator implements TokenGenerator {
         payload.put(TOKEN_TYPE_KEY, ACCESS_TYPE_VALUE);
         Long tokenId = keyGenerator.generateKey();
         token.setRefreshTokenId(tokenId);
-        return generateToken(payload, jwtTokenProperties.getExpiresIn(), tokenId);
+        return generateToken(payload, tokenProperties.getExpiresIn(), tokenId);
     }
 
     /**
@@ -120,7 +123,7 @@ public class JwtTokenGenerator implements TokenGenerator {
         payload.put(TOKEN_TYPE_KEY, REFRESH_TYPE_VALUE);
         Long tokenId = keyGenerator.generateKey();
         token.setAccessTokenId(tokenId);
-        return generateToken(payload, jwtTokenProperties.getRefreshExpiresIn(), tokenId);
+        return generateToken(payload, tokenProperties.getRefreshExpiresIn(), tokenId);
     }
 
     /**

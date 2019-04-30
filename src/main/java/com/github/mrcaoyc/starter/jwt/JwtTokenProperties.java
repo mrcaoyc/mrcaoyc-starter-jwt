@@ -1,9 +1,7 @@
 package com.github.mrcaoyc.starter.jwt;
 
-import com.github.mrcaoyc.security.TokenProperties;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -11,8 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties(prefix = "security.jwt")
-@EqualsAndHashCode
-public class JwtTokenProperties extends TokenProperties {
+public class JwtTokenProperties {
     /**
      * 令牌签名密匙
      */

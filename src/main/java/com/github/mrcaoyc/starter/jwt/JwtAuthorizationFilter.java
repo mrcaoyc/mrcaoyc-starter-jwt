@@ -15,18 +15,15 @@ import java.util.Map;
  */
 public class JwtAuthorizationFilter extends AuthorizationFilter {
     private JwtTokenGenerator jwtTokenGenerator;
-    private TokenProperties tokenProperties;
 
 
     public JwtAuthorizationFilter(TokenProperties tokenProperties, JwtTokenGenerator jwtTokenGenerator) {
         super(tokenProperties);
         this.jwtTokenGenerator = jwtTokenGenerator;
-        this.tokenProperties = tokenProperties;
     }
 
     @Override
-    protected boolean before(HttpServletRequest request, HttpServletResponse response) {
-        String token = tokenProperties.getAuthKey();
+    protected boolean before(HttpServletRequest request, HttpServletResponse response, String token) {
         try {
             Map<String, Object> payload = jwtTokenGenerator.parseAccessToken(token);
             AuthorizationEvent authorizationEvent = new AuthorizationEvent(payload);
